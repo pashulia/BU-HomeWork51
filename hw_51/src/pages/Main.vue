@@ -17,6 +17,35 @@
     <div class="deploy">
         <button @click="deployContract">Деплоить контракт</button>
     </div>
+    <div class="tx_send">
+        <p>
+            <input v-model="number" placeholder="число" />
+            <input  class="to" v-model="cAddress" placeholder="адрес" />
+            <button @click="sNumber">Ввод</button>
+        </p>
+    </div>
+    <div>
+        Число = {{ ans }}
+        <p>
+            <input class="to" v-model="cAddress" placeholder="адрес" />
+            <button @click="gNumber">Получить</button>
+        </p>
+    </div>
+    <div class="tx_send">
+        <p>
+            <input v-model="value" placeholder="число" />
+            <input class="to" v-model="cAddress" placeholder="адрес" />
+            <button @click="sArr">Ввод</button>
+        </p>
+    </div>
+    <div>
+        Массив = {{ ans }}
+        <p>
+            <input class="to" v-model="cAddress" placeholder="адрес" />
+            <button @click="gArr">Получить</button>
+        </p>
+    </div>
+    <!-- 0x43b2320aa7f00b43ee73474970c27b43757c0621 -->
 </template>
 
 <script>
@@ -26,7 +55,12 @@ export default {
     data() {
         return {
             to: "",
-            value: ""
+            value: "",
+            number: "",
+            ans: "",
+            arr: "",
+            cAddress: "",
+            value: "",
         }
     },
     methods: {
@@ -34,11 +68,28 @@ export default {
             newBlockHeaders: "newBlockHeaders",
             connectionWallet: "connectionWallet",
             sendTransaction: "sendTransaction",
+            deployContract: "deployContract",
+            setNumber: "setNumber",
+            getNumber: "getNumber",
+            addToData: "addToData",
+            getData: "getData",
         }),
         async sendTx() {
             await this.sendTransaction([this.to, this.value])
             this.to = ""
             this.value = ""
+        },
+        async sNumber(){
+            await this.setNumber([this.cAddress, this.number])
+        },
+        async gNumber() {
+            this.ans = await this.getNumber(this.cAddress);
+        },
+        async sArr(){
+            await this.addToData([this.cAddress, this.value])
+        },
+        async gArr() {
+            this.arr = await this.getData(this.cAddress)
         }
     },
     mounted() {

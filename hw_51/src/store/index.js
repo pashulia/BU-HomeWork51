@@ -1,5 +1,8 @@
 import { createStore } from 'vuex';
 
+import { ABI } from '@/contracts/Example.abi.js';
+import { bytecode } from '@/contracts/Example.bin.js';
+
 const Web3 = require('web3');
 const web3 = new Web3('wss://eth-goerli.g.alchemy.com/v2/XdE1v9zVDSoRe6S5013cteykw1ZDC0u9');
 
@@ -68,7 +71,7 @@ export default createStore({
         // отправка транзакции
         async sendTransaction({ state }, arg) {
             const [to, value] = arg;
-            sum = web3.utils.numberToHex(value);
+            let sum = state.web3Wallet.utils.toHex(value);
             await ethereum.request({
                 method: "eth_sendTransaction", 
                 params: [{
@@ -80,6 +83,66 @@ export default createStore({
             .then(hash => {
                 console.log(`Tx hash: ${hash}`)
             })
+        },
+        async deployContract({ state }) {
+            // let myContract = new state.web3Wallet.eth.Contract(ABI);
+            // let deployCode = myContract.deploy({
+            //     data: bytecode
+            // }).encodeABI();
+            await ethereum.request({
+                method: "eth_sendTransaction", 
+                params: [{
+                    from: state.wallet.address,
+                    data: bytecode
+                }] 
+            })
+            .then(hash => {
+                console.log(`Tx hash ${hash}`)
+            })
+        },
+        async setNumber({ state }, args ){
+            const [contractAddress, number] = args;
+            let myContract = new state.web3Wallet.eth.Contract(ABI, contractAddress);
+            let txData = myContract.methods.setNumber(number).encodeABI();
+        
+            ethereum.request({
+                method: "eth_sendTransaction",
+                params: [{
+                    from: state.wallet.address,
+                    to: contractAddress,
+                    data: txData
+                }]
+            })
+            .then(hash => {
+                console.log(`Tx hash ${hash}`)
+            })
+        },
+        async getNumber({ state }, contractAddress) {
+            let myContract = new state.web3Wallet.eth.Contract(ABI, contractAddress);
+            let number = await myContract.methods.getNumber().call({from: state.wallet.address});
+            return number;
+        },
+        async addToData({ state }, args ){
+            const [contractAddress, data] = args;
+            let myContract = new state.web3Wallet.eth.Contract(ABI, contractAddress);
+            let txArr = myContract.methods.addToData(data).encodeABI();
+        
+            ethereum.request({
+                method: "eth_sendTransaction",
+                params: [{
+                    from: state.wallet.address,
+                    to: contractAddress,
+                    data: txArr
+                }]
+            })
+            .then(hash => {
+                console.log(`Tx hash ${hash}`)
+            })
+        },
+        async getData({ state }, contractAddress) {
+            let myContract = new state.web3Wallet.eth.Contract(ABI, contractAddress);
+            let arr = await myContract.methods.getData().call({from: state.wallet.address});
+            return arr;
         }
     },
     modules: {
