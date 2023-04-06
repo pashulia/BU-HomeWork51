@@ -4,6 +4,7 @@ import {
 } from 'vue-router';
 
 import Main from '@/pages/Main.vue';
+import TxPage from '@/pages/TxPage';
 
 const routes = [
     {
@@ -11,6 +12,11 @@ const routes = [
         name: 'home',
         component: Main
     },
+    {
+        path: '/tx/:transactionHash',
+        name: 'txPage',
+        component: TxPage
+    }
 ]
 
 const router = createRouter({

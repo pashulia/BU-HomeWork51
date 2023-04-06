@@ -72,7 +72,7 @@ export default createStore({
         async sendTransaction({ state }, arg) {
             const [to, value] = arg;
             let sum = state.web3Wallet.utils.toHex(value);
-            await ethereum.request({
+            let tx = await ethereum.request({
                 method: "eth_sendTransaction", 
                 params: [{
                     from: state.wallet.address,
@@ -80,9 +80,17 @@ export default createStore({
                     value: sum,
                 }] 
             })
-            .then(hash => {
-                console.log(`Tx hash: ${hash}`)
-            })
+            return tx;
+            // .then(hash => {
+            //     console.log(`Tx hash: ${hash}`)
+            // })
+            
+        },
+        async getTx({ commit }, transactionHash) {
+            console.log(transactionHash);
+            console.log(await web3.eth.getTransaction(transactionHash));
+            return await web3.eth.getTransaction(transactionHash)
+            
         },
         async deployContract({ state }) {
             // let myContract = new state.web3Wallet.eth.Contract(ABI);
@@ -97,7 +105,8 @@ export default createStore({
                 }] 
             })
             .then(hash => {
-                console.log(`Tx hash ${hash}`)
+                console.log(`Tx hash ${hash}`);
+                
             })
         },
         async setNumber({ state }, args ){
@@ -121,6 +130,28 @@ export default createStore({
             let myContract = new state.web3Wallet.eth.Contract(ABI, contractAddress);
             let number = await myContract.methods.getNumber().call({from: state.wallet.address});
             return number;
+        },
+        async setString({ state }, args ){
+            const [contractAddress, str] = args;
+            let myContract = new state.web3Wallet.eth.Contract(ABI, contractAddress);
+            let txData = myContract.methods.setStr(str).encodeABI();
+        
+            ethereum.request({
+                method: "eth_sendTransaction",
+                params: [{
+                    from: state.wallet.address,
+                    to: contractAddress,
+                    data: txData
+                }]
+            })
+            .then(hash => {
+                console.log(`Tx hash ${hash}`)
+            })
+        },
+        async getString({ state }, contractAddress) {
+            let myContract = new state.web3Wallet.eth.Contract(ABI, contractAddress);
+            let _str = await myContract.methods.getStr().call({from: state.wallet.address});
+            return _str;
         },
         async addToData({ state }, args ){
             const [contractAddress, data] = args;
