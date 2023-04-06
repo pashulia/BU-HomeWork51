@@ -7,10 +7,12 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@vue/compiler-sfc": "^3.2.47",
     "core-js": "^3.8.3",
     "fs": "^0.0.1-security",
     "solc": "^0.8.19",
-    "vue": "^3.2.13",
+    "vue": "^3.2.36",
+    "vue-loader": "^17.0.1",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0",
     "web3": "^1.9.0"
