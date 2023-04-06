@@ -11,8 +11,12 @@
         <li>Хэш транзакции: {{ tx.hash }}</li>
         <li>Номер(nonce): {{ tx.nonce }}</li>
         <li>Сумма: {{ tx.value }} wei</li>
-        <li v-if="tx.blockNumber === null">Статус: в ожидании <button @click=this.$router.go(0)>обновить</button></li>
-        
+        <li v-if="tx.blockNumber === null">
+            Статус: в ожидании 
+            <button @click=this.$router.go(0)>
+                обновить
+            </button>
+        </li>    
         <li v-else>Статус: успешно </li>
     </ul>
     

@@ -80,8 +80,6 @@
             </p>
         </div>
     </div>
-    
-    <!-- 0x43b2320aa7f00b43ee73474970c27b43757c0621 -->
 </template>
 
 <script>
@@ -117,7 +115,6 @@ export default {
             this.to = "";
             this.value = "";
             console.log(this.res);
-            // 0xAa7BA90141352F9Cb3E2a717037984971DFfdaAD
         },
         async sNumber(){
             await this.setNumber([this.cAddress, this.number])
